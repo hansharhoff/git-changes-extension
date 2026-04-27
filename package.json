@@ -1,0 +1,84 @@
+{
+  "name": "git-remote-changes-alert",
+  "displayName": "Git Remote Changes Alert",
+  "description": "Makes remote Git changes and default branch drift visible in the VS Code status bar.",
+  "version": "0.0.1",
+  "publisher": "hansharhoff",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hansharhoff/git-remote-changes-alert.git"
+  },
+  "engines": {
+    "vscode": "^1.116.0"
+  },
+  "categories": [
+    "SCM Providers",
+    "Other"
+  ],
+  "keywords": [
+    "git",
+    "status bar",
+    "remote",
+    "pull",
+    "branch"
+  ],
+  "activationEvents": [
+    "onStartupFinished",
+    "onCommand:git-remote-changes-alert.refresh",
+    "onCommand:git-remote-changes-alert.fetchAndRefresh"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "git-remote-changes-alert.refresh",
+        "title": "Git Remote Changes Alert: Refresh"
+      },
+      {
+        "command": "git-remote-changes-alert.fetchAndRefresh",
+        "title": "Git Remote Changes Alert: Fetch and Refresh"
+      }
+    ],
+    "configuration": {
+      "title": "Git Remote Changes Alert",
+      "properties": {
+        "git-remote-changes-alert.defaultBranch": {
+          "type": "string",
+          "default": "",
+          "description": "Default branch to compare feature branches against. Leave empty to use the remote HEAD, then origin/main or origin/master. Values like main, origin/main, and refs/heads/main are supported."
+        },
+        "git-remote-changes-alert.showWhenUpToDate": {
+          "type": "boolean",
+          "default": false,
+          "description": "Show a quiet status bar item even when the current branch has no missing upstream or default branch commits."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run package",
+    "compile": "npm run check-types && npm run lint && node esbuild.js",
+    "watch": "npm-run-all -p watch:*",
+    "watch:esbuild": "node esbuild.js --watch",
+    "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
+    "package": "npm run check-types && npm run lint && node esbuild.js --production",
+    "compile-tests": "tsc -p . --outDir out",
+    "watch-tests": "tsc -p . -w --outDir out",
+    "pretest": "npm run compile-tests && npm run compile && npm run lint",
+    "check-types": "tsc --noEmit",
+    "lint": "eslint src",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.116.0",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "22.x",
+    "typescript-eslint": "^8.56.1",
+    "eslint": "^9.39.3",
+    "esbuild": "^0.27.3",
+    "npm-run-all": "^4.1.5",
+    "typescript": "^5.9.3",
+    "@vscode/test-cli": "^0.0.12",
+    "@vscode/test-electron": "^2.5.2"
+  }
+}
