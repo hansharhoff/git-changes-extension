@@ -26,3 +26,6 @@ This extension contributes the following settings:
 ## Notes
 
 The extension uses VS Code's built-in Git extension for repository discovery and falls back to the local `git` executable for branch comparisons. The default branch warning is based on fetched refs, so it is most useful when VS Code Git autofetch is enabled or after running the fetch command from the status bar.
+
+## Vibecoding warning
+This application was two-shotted with GPT-5.5
