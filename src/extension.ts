@@ -179,43 +179,49 @@ class GitRemoteChangesAlert implements vscode.Disposable {
 	}
 
 	private async updateStatus(): Promise<void> {
-		const repository = this.getActiveRepository();
-		this.latestRepository = repository;
+		try {
+			const repository = this.getActiveRepository();
+			this.latestRepository = repository;
 
-		if (!repository) {
-			this.statusBarItem.hide();
-			return;
-		}
-
-		const signal = await this.getRepositorySignal(repository);
-
-		if (!signal) {
-			this.statusBarItem.hide();
-			return;
-		}
-
-		const hasUpstreamChanges = signal.upstreamBehind > 0;
-		const hasDefaultBranchChanges = signal.defaultAhead > 0;
-
-		if (!hasUpstreamChanges && !hasDefaultBranchChanges) {
-			if (getConfiguration<boolean>('showWhenUpToDate', false, repository.rootUri)) {
-				this.statusBarItem.text = '$(check) Git up to date';
-				this.statusBarItem.tooltip = this.createTooltip(signal, false);
-				this.statusBarItem.backgroundColor = undefined;
-				this.statusBarItem.show();
-			} else {
+			if (!repository) {
 				this.statusBarItem.hide();
+				return;
 			}
 
-			return;
-		}
+			const signal = await this.getRepositorySignal(repository);
 
-		this.statusBarItem.text = formatStatusText(signal);
-		this.statusBarItem.tooltip = this.createTooltip(signal, true);
-		this.statusBarItem.backgroundColor = new vscode.ThemeColor(
-			hasUpstreamChanges ? 'statusBarItem.errorBackground' : 'statusBarItem.warningBackground'
-		);
-		this.statusBarItem.show();
+			if (!signal) {
+				this.statusBarItem.hide();
+				return;
+			}
+
+			const hasUpstreamChanges = signal.upstreamBehind > 0;
+			const hasDefaultBranchChanges = signal.defaultAhead > 0;
+
+			if (!hasUpstreamChanges && !hasDefaultBranchChanges) {
+				if (getConfiguration<boolean>('showWhenUpToDate', false, repository.rootUri)) {
+					this.statusBarItem.text = '$(check) Git up to date';
+					this.statusBarItem.tooltip = this.createTooltip(signal, false);
+					this.statusBarItem.backgroundColor = undefined;
+					this.statusBarItem.show();
+				} else {
+					this.statusBarItem.hide();
+				}
+
+				return;
+			}
+
+			this.statusBarItem.text = formatStatusText(signal);
+			this.statusBarItem.tooltip = this.createTooltip(signal, true);
+			this.statusBarItem.backgroundColor = new vscode.ThemeColor(
+				hasUpstreamChanges ? 'statusBarItem.errorBackground' : 'statusBarItem.warningBackground'
+			);
+			this.statusBarItem.show();
+		} catch (error) {
+			const message = error instanceof Error ? error.message : String(error);
+			this.statusBarItem.hide();
+			void vscode.window.showWarningMessage(`Git Remote Changes Alert could not refresh: ${message}`);
+		}
 	}
 
 	private async getRepositorySignal(repository: GitRepository): Promise<RepositorySignal | undefined> {
@@ -369,8 +375,12 @@ async function findDefaultBranchRef(repository: GitRepository, preferredRemote: 
 }
 
 async function getRemoteHeadRef(rootUri: vscode.Uri, remote: string): Promise<string | undefined> {
-	const remoteHead = await runGit(rootUri, ['symbolic-ref', '--quiet', '--short', `refs/remotes/${remote}/HEAD`]);
-	return remoteHead?.trim() || undefined;
+	try {
+		const remoteHead = await runGit(rootUri, ['symbolic-ref', '--quiet', '--short', `refs/remotes/${remote}/HEAD`]);
+		return remoteHead?.trim() || undefined;
+	} catch {
+		return undefined;
+	}
 }
 
 async function refExists(rootUri: vscode.Uri, ref: string): Promise<boolean> {
