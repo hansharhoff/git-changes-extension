@@ -2,7 +2,7 @@
   "name": "git-remote-changes-alert",
   "displayName": "Git Remote Changes Alert",
   "description": "Makes remote Git changes and default branch drift visible in the VS Code status bar.",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "publisher": "hansharhoff",
   "repository": {
     "type": "git",
