@@ -2,6 +2,10 @@
 
 All notable changes to the "git-remote-changes-alert" extension will be documented in this file.
 
+## [0.0.3]
+
+- Excluded `.env` files from VSIX packaging to prevent secret leakage.
+
 ## [0.0.2]
 
 - Fixed refresh failures when remote HEAD symbolic refs are missing.
