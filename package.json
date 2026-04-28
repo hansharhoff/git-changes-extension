@@ -6,7 +6,7 @@
   "publisher": "hansharhoff",
   "repository": {
     "type": "git",
-    "url": "https://github.com/hansharhoff/git-remote-changes-alert.git"
+    "url": "https://github.com/hansharhoff/git-changes-extension.git"
   },
   "engines": {
     "vscode": "^1.116.0"
