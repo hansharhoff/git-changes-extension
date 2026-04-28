@@ -4,6 +4,7 @@
   "description": "Makes remote Git changes and default branch drift visible in the VS Code status bar.",
   "version": "0.0.3",
   "publisher": "hansharhoff",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/hansharhoff/git-changes-extension.git"
